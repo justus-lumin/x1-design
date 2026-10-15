@@ -1,26 +1,265 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/manrope";
+@import "@fontsource-variable/jetbrains-mono";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ------------------------------------------------------------------
+   X1 / Soft monochrome
+   Layer 1: primitives (ink scale). Never referenced by components.
+   Layer 2: semantic tokens (shadcn contract + X1 additions).
+   Layer 3: Tailwind theme mapping (@theme inline).
+
+   Rule: no borders, anywhere. Surfaces separate by tone and space.
+   --border is transparent on purpose so stray shadcn borders vanish.
+------------------------------------------------------------------- */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primitives: one neutral ink scale, no chroma. */
+  --ink-0: #ffffff;
+  --ink-10: #f2f2f2;
+  --ink-20: #ededed;
+  --ink-25: #fafafa;
+  --ink-50: #f4f4f4;
+  --ink-100: #ececec;
+  --ink-200: #dcdcdc;
+  --ink-300: #c2c2c2;
+  --ink-350: #d4d4d4;
+  --ink-400: #9a9a9a;
+  --ink-500: #8a8a8a;
+  --ink-550: #6e6e6e;
+  --ink-600: #5c5c5c;
+  --ink-700: #2a2a2a;
+  --ink-800: #1c1c1c;
+  --ink-850: #161616;
+  --ink-900: #121212;
+  --ink-950: #0c0c0c;
+  --ink-975: #111111;
+  --ink-1000: #000000;
+
+  /* Light theme */
+  --background: var(--ink-0);
+  --foreground: var(--ink-950);
+  --card: var(--ink-50);
+  --card-foreground: var(--ink-950);
+  --raised: var(--ink-100);
+  --popover: var(--ink-0);
+  --popover-foreground: var(--ink-950);
+  --primary: var(--ink-950);
+  --primary-foreground: var(--ink-0);
+  --secondary: var(--ink-100);
+  --secondary-foreground: var(--ink-950);
+  --muted: var(--ink-50);
+  --muted-foreground: var(--ink-550);
+  --accent: var(--ink-100);
+  --accent-foreground: var(--ink-950);
+  --destructive: var(--ink-950);
+  --border: transparent;
+  --input: var(--ink-100);
+  --ring: var(--ink-400);
+
+  --subtle-foreground: var(--ink-400);
+  --hatch: rgb(0 0 0 / 0.06); /* unconfirmed facts: a soft hatch, never a line */
+  --grain-lo: var(--ink-975);
+  --grain-hi: var(--ink-10);
+
+  /* Shape */
+  --radius: 0.5rem;
+  --radius-tile: 0.75rem;
+  --radius-control: 0.375rem;
+
+  /* Layout rhythm */
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --grid-gap: clamp(0.75rem, 1.5vw, 1rem);
+  --section-y: clamp(6rem, 12vw, 10.5rem);
+  --section-y-tight: clamp(3.5rem, 7vw, 6rem);
+  --max-w: 82rem;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Dark is the default theme (set on <html> before paint). */
+.dark {
+  --background: var(--ink-950);
+  --foreground: var(--ink-20);
+  --card: var(--ink-900);
+  --card-foreground: var(--ink-20);
+  --raised: var(--ink-800);
+  --popover: var(--ink-900);
+  --popover-foreground: var(--ink-20);
+  --primary: var(--ink-20);
+  --primary-foreground: var(--ink-950);
+  --secondary: var(--ink-800);
+  --secondary-foreground: var(--ink-20);
+  --muted: var(--ink-900);
+  --muted-foreground: var(--ink-500);
+  --accent: var(--ink-800);
+  --accent-foreground: var(--ink-20);
+  --destructive: var(--ink-20);
+  --input: var(--ink-800);
+  --ring: var(--ink-600);
+  --subtle-foreground: var(--ink-600);
+  --hatch: rgb(255 255 255 / 0.05);
+  --grain-lo: var(--ink-950);
+  --grain-hi: var(--ink-350);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-raised: var(--raised);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-subtle: var(--subtle-foreground);
+
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Manrope Variable", "Inter Variable", ui-sans-serif, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+
+  --radius-sm: var(--radius-control);
+  --radius-md: var(--radius-control);
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius);
+  --radius-2xl: var(--radius-tile);
+
+  /* Type scale. Display = Manrope, everything else = Inter. Calm sizes. */
+  --text-display-xl: clamp(2.75rem, 5.6vw, 5.25rem);
+  --text-display-xl--line-height: 1;
+  --text-display-xl--letter-spacing: -0.045em;
+  --text-display-lg: clamp(2.25rem, 4vw, 3.75rem);
+  --text-display-lg--line-height: 1.04;
+  --text-display-lg--letter-spacing: -0.04em;
+  --text-display-md: clamp(1.75rem, 2.6vw, 2.5rem);
+  --text-display-md--line-height: 1.1;
+  --text-display-md--letter-spacing: -0.035em;
+  --text-title: clamp(1.125rem, 1.4vw, 1.375rem);
+  --text-title--line-height: 1.25;
+  --text-title--letter-spacing: -0.02em;
+  --text-lede: clamp(1rem, 1.2vw, 1.125rem);
+  --text-lede--line-height: 1.6;
+  --text-lede--letter-spacing: -0.008em;
+  --text-eyebrow: 0.8125rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: -0.005em;
+  --text-data: 0.75rem;
+  --text-data--line-height: 1.3;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/40;
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    overflow-x: clip;
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "cv11", "ss01", "ss03";
+    font-optical-sizing: auto;
+    transition: background-color 0.5s var(--ease-out), color 0.5s var(--ease-out);
+  }
+  ::selection {
+    background: var(--foreground);
+    color: var(--background);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* 12-column grid, shared by every page */
+  .container-x1 {
+    width: 100%;
+    max-width: var(--max-w);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+  .grid-12 {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+  }
+  @media (min-width: 768px) {
+    .grid-12 {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+  }
+  .section-y {
+    padding-block: var(--section-y);
+  }
+  .section-y-tight {
+    padding-block: var(--section-y-tight);
+  }
+
+  /* Unconfirmed / suggested: soft diagonal hatch. Replaces the dashed outline. */
+  .hatch {
+    background-image: repeating-linear-gradient(-45deg, var(--hatch) 0 1px, transparent 1px 6px);
+  }
+}
+
+/* Split headings stay hidden until SplitText has measured them (prevents a reflow flash). */
+.js [data-split]:not([data-split-ready]) {
+  visibility: hidden;
+}
+.js [data-ar-hero]:not([data-ar-done]) {
+  visibility: hidden;
+}
+
+/* Failsafe: whatever happens to JS, fonts or GSAP, nothing stays hidden longer than 2.5s. */
+@keyframes x1-failsafe {
+  to {
+    visibility: visible;
+  }
+}
+.js [data-split]:not([data-split-ready]),
+.js [data-ar-hero]:not([data-ar-done]),
+.js [data-hub-pending]:not([data-hub-done]),
+.js [data-hero]:not([data-hero-ready]) :is([data-hero-fade], [data-stage], [data-toc], [data-card]),
+.js [data-lm]:not([data-lm-ready]) [data-lm-item] {
+  animation: x1-failsafe 0s linear 2.5s forwards;
+}
+
+.split-line,
+.split-char {
+  padding-bottom: 0.06em;
+  margin-bottom: -0.06em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-split]:not([data-split-ready]),
+  .js [data-ar-hero]:not([data-ar-done]),
+  .js [data-hub-pending]:not([data-hub-done]),
+  .js [data-hero]:not([data-hero-ready]) :is([data-hero-fade], [data-stage], [data-toc], [data-card]),
+  .js [data-lm]:not([data-lm-ready]) [data-lm-item] {
+    visibility: visible;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/.next-build/
+/qa-report/
+
+# raw board crops (regenerable, not needed for review)
+/preview/sections/

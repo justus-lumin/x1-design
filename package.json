@@ -6,22 +6,49 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "build:check": "NEXT_DIST_DIR=.next-build next build",
+    "tokens": "node scripts/export-tokens.mjs",
+    "scrape": "node scripts/scrape.mjs",
+    "qa:static": "npm run typecheck && npm run lint && npm run build:check",
+    "qa:audit": "node scripts/qa/audit.mjs",
+    "qa:reveal": "node scripts/qa/reveal-stress.mjs",
+    "qa:shader": "node scripts/qa/shader-stress.mjs",
+    "qa:shots": "node scripts/qa/shoot.mjs",
+    "qa": "npm run qa:static && npm run qa:audit -- --sample=4 && npm run qa:reveal && npm run qa:shader"
   },
   "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@gsap/react": "^2.1.2",
+    "@radix-ui/react-accordion": "^1.3.1",
+    "@radix-ui/react-navigation-menu": "^1.4.1",
+    "@radix-ui/react-separator": "^1.2.0",
+    "@radix-ui/react-slot": "^1.5.0",
+    "@radix-ui/react-tabs": "^1.2.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "gsap": "^3.13.0",
+    "lucide-react": "^1.57.0",
+    "next": "15.5.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.5.4"
+    "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "cheerio": "^1.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
-    "@eslint/eslintrc": "^3"
+    "playwright-core": "^1.64.1",
+    "tailwindcss": "^4",
+    "tw-animate-css": "^1.4.0",
+    "typescript": "^5"
   }
 }
